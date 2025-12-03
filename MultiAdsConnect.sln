@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAdsConnect", "MultiAdsConnect.csproj", "{27D33154-D81B-E536-DD46-BF5781F0F4D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{27D33154-D81B-E536-DD46-BF5781F0F4D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27D33154-D81B-E536-DD46-BF5781F0F4D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27D33154-D81B-E536-DD46-BF5781F0F4D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27D33154-D81B-E536-DD46-BF5781F0F4D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1BE8951-6138-4C64-BE00-1EF1C4A94326}
+	EndGlobalSection
+EndGlobal
