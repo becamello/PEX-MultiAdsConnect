@@ -13,6 +13,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<ISpreadsheetService, SpreadsheetService>();
 builder.Services.AddScoped<IGeminiService, GeminiService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 var app = builder.Build();
 

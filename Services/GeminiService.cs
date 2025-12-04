@@ -31,6 +31,7 @@ namespace MultiAdsConnect.Services
                 - Clara, objetiva e profissional
                 - Com no máximo 20 a 30 linhas
                 - Sem explicar fórmulas (CTR, CPC, CPM)
+                - Sem introduções, apenas traga os tópicos solicitados
                 - Foque em insights, não em teoria
                 - Dê recomendações práticas que possam ser aplicadas imediatamente
                 - Estruture exatamente nas seções abaixo:
