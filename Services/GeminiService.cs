@@ -1,26 +1,54 @@
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace MultiAdsConnect.Services
 {
-    public class GeminiService
+    public class GeminiService : IGeminiService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private const string API_KEY = "AIzaSyCrQynCacYNkaq2E9vlKjMf0EekI4obejg";
+        private readonly string _apiKey;
+        private const string MODEL = "models/gemini-2.5-flash";
 
-        private const string MODEL = "gemini-2.5-flash";
-
-        public GeminiService(IHttpClientFactory httpClientFactory)
+        public GeminiService(IHttpClientFactory httpClientFactory, IConfiguration config)
         {
             _httpClientFactory = httpClientFactory;
+            _apiKey = config["Gemini:ApiKey"] ?? throw new InvalidOperationException("Gemini:ApiKey não configurada.");
         }
 
         public async Task<string> AnalisarRelatorioAdsAsync(string relatorioJson)
         {
             var client = _httpClientFactory.CreateClient();
 
-            string url =
-                $"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={API_KEY}";
+            var url = $"https://generativelanguage.googleapis.com/v1/{MODEL}:generateContent?key={_apiKey}";
+
+            var prompt =
+            """
+                Você é um analista sênior de tráfego pago.
+                Analise o relatório de campanhas em JSON e produza uma resposta:
+
+                - Extremamente bem formatada em **Markdown**
+                - Clara, objetiva e profissional
+                - Com no máximo 20 a 30 linhas
+                - Sem explicar fórmulas (CTR, CPC, CPM)
+                - Foque em insights, não em teoria
+                - Dê recomendações práticas que possam ser aplicadas imediatamente
+                - Estruture exatamente nas seções abaixo:
+
+                1. Visão Geral
+                (resumo breve)
+
+                2. Principais Indicadores
+                (comparação dos pontos relevantes)
+
+                3. Pontos de Atenção
+                (itens críticos, diretos)
+
+                4. Recomendações
+                (passos claros e enxutos)
+
+                Agora analise o JSON abaixo:
+            """;
 
             var payload = new
             {
@@ -30,14 +58,9 @@ namespace MultiAdsConnect.Services
                     {
                         parts = new[]
                         {
-                            new {
-                                text = 
-                                "Você é um analista sênior de tráfego pago. Analise detalhadamente o relatório de ads abaixo e gere:\n" +
-                                "1) Análise geral\n" +
-                                "2) Pontos de atenção\n" +
-                                "3) Ajustes recomendados\n" +
-                                "4) Ações práticas imediatas\n\n" +
-                                "RELATÓRIO:\n" + relatorioJson
+                            new
+                            {
+                                text = prompt + relatorioJson
                             }
                         }
                     }
@@ -46,13 +69,16 @@ namespace MultiAdsConnect.Services
 
             var json = JsonSerializer.Serialize(payload);
 
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
 
             var response = await client.SendAsync(request);
             var result = await response.Content.ReadAsStringAsync();
 
             return result;
         }
+
     }
 }

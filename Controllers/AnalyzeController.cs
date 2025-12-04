@@ -7,9 +7,9 @@ namespace MultiAdsConnect.Controllers
     [Route("api/[controller]")]
     public class AnalyzeController : ControllerBase
     {
-        private readonly GeminiService _geminiService;
+        private readonly IGeminiService _geminiService;
 
-        public AnalyzeController(GeminiService geminiService)
+        public AnalyzeController(IGeminiService geminiService)
         {
             _geminiService = geminiService;
         }
@@ -20,10 +20,8 @@ namespace MultiAdsConnect.Controllers
             if (report == null)
                 return BadRequest(new { error = "O relatório está vazio." });
 
-            string jsonRelatorio = report.ToString()!;
-
+            var jsonRelatorio = report.ToString() ?? "[]";
             var resposta = await _geminiService.AnalisarRelatorioAdsAsync(jsonRelatorio);
-
             return Ok(resposta);
         }
     }
