@@ -72,7 +72,6 @@ namespace MultiAdsConnect.Controllers
                 using var doc = JsonDocument.Parse(rawJson);
                 var root = doc.RootElement;
 
-                // Estrutura esperada: { "candidates": [ { "content": { "parts": [ { "text": "..." } ] } } ] }
                 if (root.TryGetProperty("candidates", out var candidates) && candidates.ValueKind == JsonValueKind.Array && candidates.GetArrayLength() > 0)
                 {
                     var first = candidates[0];
@@ -89,23 +88,18 @@ namespace MultiAdsConnect.Controllers
                         }
                     }
 
-                    // às vezes a resposta está em candidates[0].content.parts[0].text como string direta
                     if (first.TryGetProperty("text", out var t2))
                         return t2.GetString() ?? rawJson;
                 }
 
-                // alternativa comum: {"candidates":[{"content":{"parts":[{"text":"..."}]}}], "modelVersion": "..."}
-                // Se não achar, tente buscar por "text" em profundidade (último recurso)
                 var maybeText = FindFirstPropertyRecursive(root, "text");
                 if (!string.IsNullOrEmpty(maybeText))
                     return maybeText;
 
-                // fallback: retorna o raw JSON (mas não ideal)
                 return rawJson;
             }
             catch
             {
-                // se não for JSON válido, considera que já é texto
                 return rawJson;
             }
         }

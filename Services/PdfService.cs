@@ -70,9 +70,6 @@ namespace MultiAdsConnect.Services
             return document.GeneratePdf();
         }
 
-        // -----------------------
-        // MARKDOWN → BLOCO
-        // -----------------------
         private enum BlockType { Paragraph, Heading }
 
         private record Block(BlockType Type, string Content);
@@ -106,9 +103,6 @@ namespace MultiAdsConnect.Services
             return blocks;
         }
 
-        // -----------------------
-        // INLINE: **bold**
-        // -----------------------
         private record TextFragment(string Text, bool Bold);
 
         private static IEnumerable<TextFragment> ParseInlineFormatting(string text)
@@ -122,21 +116,18 @@ namespace MultiAdsConnect.Services
 
             foreach (Match match in matches)
             {
-                // texto antes do bold
                 if (match.Index > lastIndex)
                 {
                     var before = text[lastIndex..match.Index];
                     list.Add(new TextFragment(before, false));
                 }
 
-                // texto bold
                 var boldText = match.Groups[1].Value;
                 list.Add(new TextFragment(boldText, true));
 
                 lastIndex = match.Index + match.Length;
             }
 
-            // resto da linha
             if (lastIndex < text.Length)
             {
                 var after = text[lastIndex..];
